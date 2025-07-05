@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Order Medicines - MediSwift</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 2rem;
+    }
+    .order-container {
+      max-width: 600px;
+      background: white;
+      margin: auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #2b7a78;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #333;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background-color: #2b7a78;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #205e5c;
+    }
+    #status {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="order-container">
+    <h2>Place Your Medicine Order</h2>
+    <form id="orderForm">
+      <label for="name">Medicine Name</label>
+      <input type="text" id="name" placeholder="Enter medicine name" required />
+
+      <label for="quantity">Quantity</label>
+      <input type="number" id="quantity" placeholder="Enter quantity" required />
+
+      <label for="customerName">Your Name</label>
+      <input type="text" id="customerName" placeholder="Enter your name" required />
+
+      <label for="address">Delivery Address</label>
+      <textarea id="address" placeholder="Enter delivery address" required></textarea>
+
+      <button type="submit">Place Order</button>
+      <p id="status"></p>
+    </form>
+  </div>
+  <script>
+    document.getElementById("orderForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const quantity = document.getElementById("quantity").value;
+      const customerName = document.getElementById("customerName").value;
+      const address = document.getElementById("address").value;
+
+      const res = await fetch("http://localhost:3000/api/order/place", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, quantity, customerName, address })
+      });
+
+      const result = await res.json();
+      const status = document.getElementById("status");
+
+      if (res.ok) {
+        window.location.href = "/mediswift/thankyou.html";
+
+      } else {
+        status.style.color = "red";
+        status.textContent = result.error || "Failed to place order.";
+      }
+    });
+  </script>
+</body>
+</html>
